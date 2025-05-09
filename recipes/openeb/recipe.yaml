@@ -1,0 +1,74 @@
+context:
+  name: openeb
+  version: 5.1.1
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/prophesee-ai/openeb/releases/download/${{ version }}/Full.Source.Code.v${{ version }}.tar.gz
+  sha256: 50561f027769331041c1d7b3a1ec720f7574ff203c32d5d94ecd512de99035fd
+
+build:
+  number: 0
+  skip:
+    - win
+    - macos
+
+requirements:
+  build:
+    - ${{ compiler('cxx') }}
+    - cmake
+    - pkgconfig
+    - make
+  host:
+    - python
+    - libgl-devel
+    - libcanberra
+    - zlib
+    - libusb
+    - boost
+    - libopencv
+    - pybind11
+    - glew
+    - glfw
+    - hdf5
+    - libprotobuf
+    - pytest
+    - gtest
+  run:
+    - python
+    - libusb
+    - boost
+    - libopencv
+    - glew
+    - glfw
+    - hdf5
+    - libprotobuf
+
+tests:
+  - python:
+      imports:
+        - metavision_sdk_base
+
+about:
+  homepage: https://github.com/prophesee-ai/openeb
+  summary: |
+    Open source SDK to create applications leveraging event-based vision hardware equipment
+  description: |
+    OpenEB is the open source project associated with Metavision SDK
+    It enables anyone to get a better understanding of event-based
+    vision, directly interact with events and build their own applications
+    or camera plugins. As a camera manufacturer, ensure your customers benefit
+    from the most advanced event-based software suite available by building your
+    own plugin. As a creator, scientist, academic, join and contribute to the
+    fast-growing event-based vision community.
+  license: Apache-2.0
+  license_file: licensing/LICENSE_OPEN
+  documentation: https://docs.prophesee.ai/stable/index.html
+  repository: https://github.com/prophesee-ai/openeb
+
+extra:
+  recipe-maintainers:
+    - wzf03

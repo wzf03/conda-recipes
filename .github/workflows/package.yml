@@ -1,0 +1,15 @@
+name: Package
+
+on: [push]
+
+jobs:
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build conda package
+      uses: prefix-dev/rattler-build-action@v0.2.33
+      with:
+        recipe-path: recipes/openeb/recipe.yaml
+        upload-artifact: true
