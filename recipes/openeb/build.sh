@@ -13,4 +13,4 @@ cmake -B build -S . \
   ${CMAKE_ARGS} \
   -Wno-dev
 
-cmake --build build --target install -j
+cmake --build build --target install
