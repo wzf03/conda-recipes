@@ -41,6 +41,9 @@ jobs:
           pixi run rattler-build build --recipe-dir . \
             --skip-existing=all --target-platform=${{ matrix.target }} \
             -c conda-forge -c https://prefix.dev/${PREFIX_CHANNEL}
+        env:
+          RATTLER_BUILD_ENABLE_GITHUB_INTEGRATION: 'true'
+          RATTLER_BUILD_COLOR: 'always'
 
       - name: Upload all packages
         shell: bash
@@ -50,3 +53,6 @@ jobs:
           for file in output/**/*.conda; do
             rattler-build upload prefix -c ${PREFIX_CHANNEL} "$file"
           done
+        env:
+          RATTLER_BUILD_ENABLE_GITHUB_INTEGRATION: 'true'
+          RATTLER_BUILD_COLOR: 'always'
