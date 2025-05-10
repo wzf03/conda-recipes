@@ -46,6 +46,7 @@ requirements:
     - elfutils
   run:
     - h5py
+    - numpy
 
 tests:
   - python:
