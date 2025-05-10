@@ -9,9 +9,11 @@ package:
 source:
   url: https://github.com/prophesee-ai/openeb/releases/download/${{ version }}/Full.Source.Code.v${{ version }}.tar.gz
   sha256: 50561f027769331041c1d7b3a1ec720f7574ff203c32d5d94ecd512de99035fd
+  patches:
+    - 0001-conda-root-installation-path.patch
 
 build:
-  number: 3
+  number: 4
   skip:
     - not (linux and x86_64)
   script:

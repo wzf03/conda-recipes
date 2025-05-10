@@ -1,0 +1,21 @@
+diff --git a/hal/cpp/metavision_hal_install_path.h.in b/hal/cpp/metavision_hal_install_path.h.in
+index f7d60de..affedf4 100644
+--- a/hal/cpp/metavision_hal_install_path.h.in
++++ b/hal/cpp/metavision_hal_install_path.h.in
+@@ -12,6 +12,7 @@
+ #ifndef METAVISION_HAL_INSTALL_PATH_H
+ #define METAVISION_HAL_INSTALL_PATH_H
+ 
++#include <cstdlib>
+ #include <filesystem>
+ 
+ #ifdef _WIN32
+@@ -32,7 +33,7 @@ static const LPCSTR METAVISION_SUBKEY_INSTALL_PATH = "@METAVISION_SUBKEY_INSTALL
+ static const std::string METAVISION_HAL_LIB_RELATIVE_PATH = "lib/$<TARGET_FILE_NAME:metavision_hal>";
+ 
+ inline std::vector<std::filesystem::path> get_root_installation_path_candidates() {
+-    return {"@CMAKE_INSTALL_PREFIX@", "/usr"};
++    return {std::getenv("CONDA_PREFIX"), "/usr"};
+ }
+ 
+ #endif
