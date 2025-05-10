@@ -50,8 +50,9 @@ jobs:
         # do not upload on PR
         if: github.event_name == 'push'
         run: |
-          for file in output/**/*.conda; do
-            rattler-build upload prefix -c ${PREFIX_CHANNEL} "$file"
+          for pkg in $(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \) ); do
+            echo "Uploading ${pkg}"
+            pixi run rattler-build upload prefix -c ${PREFIX_CHANNEL} "${pkg}"
           done
         env:
           RATTLER_BUILD_ENABLE_GITHUB_INTEGRATION: 'true'
