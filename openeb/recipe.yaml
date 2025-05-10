@@ -11,7 +11,7 @@ source:
   sha256: 50561f027769331041c1d7b3a1ec720f7574ff203c32d5d94ecd512de99035fd
 
 build:
-  number: 2
+  number: 3
   skip:
     - not (linux and x86_64)
   script:
@@ -34,7 +34,7 @@ requirements:
     - libcanberra
     - zlib
     - libusb
-    - boost
+    - libboost-devel
     - libopencv
     - pybind11
     - glew
