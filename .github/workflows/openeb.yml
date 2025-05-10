@@ -47,6 +47,7 @@ jobs:
         run: |
           yq -Y -i '.context.version = "${{ steps.get_version.outputs.latest_version }}"' openeb/recipe.yaml
           yq -Y -i '.source.sha256 = "${{ steps.get_sha.outputs.sha256 }}"' openeb/recipe.yaml
+          yq -Y -i '.build.number = 0' openeb/recipe.yaml
 
       - name: Create Pull Request
         if: steps.check_version.outputs.skip == 'false'

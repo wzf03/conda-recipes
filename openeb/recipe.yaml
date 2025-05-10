@@ -11,10 +11,9 @@ source:
   sha256: 50561f027769331041c1d7b3a1ec720f7574ff203c32d5d94ecd512de99035fd
 
 build:
-  number: 0
+  number: 1
   skip:
-    - win
-    - macos
+    - not (linux and x86_64)
   script:
     file: build.sh
     env:
@@ -50,11 +49,13 @@ requirements:
     - glfw
     - hdf5
     - libprotobuf
+    - h5py
 
 tests:
   - python:
       imports:
         - metavision_sdk_base
+        - metavision_core
 
 about:
   homepage: https://github.com/prophesee-ai/openeb
