@@ -1,0 +1,59 @@
+name: Update openeb version
+
+on:
+  schedule:
+    - cron: '0 2 * * 6'
+  workflow_dispatch:
+
+jobs:
+  update-openeb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python and jq
+        run: |
+          pip install yq
+          sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Get latest openeb version
+        id: get_version
+        run: |
+          latest=$(curl -s https://api.github.com/repos/prophesee-ai/openeb/releases/latest | jq -r .tag_name | sed 's/^v//')
+          echo "latest_version=$latest" >> $GITHUB_OUTPUT
+
+      - name: Check if version is updated
+        id: check_version
+        run: |
+          current=$(yq '.context.version' openeb/recipe.yaml)
+          if [ "$current" = "${{ steps.get_version.outputs.latest_version }}" ]; then
+            echo "No new version. Skipping."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download source and compute sha256
+        if: steps.check_version.outputs.skip == 'false'
+        id: get_sha
+        run: |
+          url="https://github.com/prophesee-ai/openeb/releases/download/${{ steps.get_version.outputs.latest_version }}/Full.Source.Code.v${{ steps.get_version.outputs.latest_version }}.tar.gz"
+          curl -L -o source.tar.gz "$url"
+          sha256=$(shasum -a 256 source.tar.gz | awk '{print $1}')
+          echo "sha256=$sha256" >> $GITHUB_OUTPUT
+
+      - name: Update context.version and source.sha256 in recipe.yaml
+        if: steps.check_version.outputs.skip == 'false'
+        run: |
+          yq -i '.context.version = "${{ steps.get_version.outputs.latest_version }}"' openeb/recipe.yaml
+          yq -i '.source.sha256 = "${{ steps.get_sha.outputs.sha256 }}"' openeb/recipe.yaml
+
+      - name: Create Pull Request
+        if: steps.check_version.outputs.skip == 'false'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: update openeb version to ${{ steps.get_version.outputs.latest_version }}"
+          branch: update-openeb-version
+          title: "chore: Update openeb version to ${{ steps.get_version.outputs.latest_version }}."
+          labels: |
+            automated pr
