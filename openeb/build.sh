@@ -13,4 +13,8 @@ cmake -B build -S . \
   ${CMAKE_ARGS} \
   -Wno-dev
 
-cmake --build build --target install
+if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
+  cmake --build build --target install -j 4
+else
+  cmake --build build --target install -j ${CPU_COUNT}
+fi

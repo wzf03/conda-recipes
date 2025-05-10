@@ -15,6 +15,10 @@ build:
   skip:
     - win
     - macos
+  script:
+    file: build.sh
+    env:
+      GITHUB_ACTIONS: ${{ env.get('GITHUB_ACTIONS', default='false') }}
 
 requirements:
   build:
