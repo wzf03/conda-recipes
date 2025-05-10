@@ -11,13 +11,16 @@ source:
   sha256: 50561f027769331041c1d7b3a1ec720f7574ff203c32d5d94ecd512de99035fd
 
 build:
-  number: 1
+  number: 2
   skip:
     - not (linux and x86_64)
   script:
     file: build.sh
     env:
       GITHUB_ACTIONS: ${{ env.get('GITHUB_ACTIONS', default='false') }}
+  dynamic_linking:
+    overdepending_behavior: ignore
+    overlinking_behavior: ignore
 
 requirements:
   build:
@@ -39,11 +42,12 @@ requirements:
     - hdf5
     - libprotobuf
     - pytest
-    - gtest
+    - patchelf
+    - elfutils
   run:
     - python
     - libusb
-    - boost
+    - libboost
     - libopencv
     - glew
     - glfw

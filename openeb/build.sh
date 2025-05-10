@@ -18,3 +18,9 @@ if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
 else
   cmake --build build --target install -j ${CPU_COUNT}
 fi
+
+# Manually patch the rpath
+if [ -f "$PREFIX/lib/metavision/hal/plugins/libhal_plugin_prophesee.so" ]; then
+  patchelf --add-rpath "\$ORIGIN" "$PREFIX/lib/metavision/hal/plugins/libhal_plugin_prophesee.so"
+  echo "Patched rpath for $PREFIX/lib/metavision/hal/plugins/libhal_plugin_prophesee.so"
+fi
