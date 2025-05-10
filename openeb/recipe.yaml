@@ -27,7 +27,7 @@ requirements:
     - ${{ compiler('cxx') }}
     - cmake
     - pkgconfig
-    - make
+    - ninja
   host:
     - python
     - libgl-devel
@@ -45,14 +45,6 @@ requirements:
     - patchelf
     - elfutils
   run:
-    - python
-    - libusb
-    - libboost
-    - libopencv
-    - glew
-    - glfw
-    - hdf5
-    - libprotobuf
     - h5py
 
 tests:

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cmake -B build -S . \
+cmake -B build -S . -G Ninja \
   -DCMAKE_INSTALL_PREFIX=$PREFIX \
   -DPYTHON3_SITE_PACKAGES=$SP_DIR \
   -DPython3_EXECUTABLE=$PYTHON \
