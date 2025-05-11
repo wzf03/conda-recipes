@@ -11,21 +11,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python and jq
-        run: |
-          pip install yq
-          sudo apt-get update && sudo apt-get install -y jq
+      - uses: prefix-dev/setup-pixi@v0.8.8
+        with:
+          pixi-version: v0.46.0
+          cache: true
+          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
       - name: Get latest openeb version
         id: get_version
         run: |
-          latest=$(curl -s https://api.github.com/repos/prophesee-ai/openeb/releases/latest | jq -r .tag_name)
+          latest=$(curl -s https://api.github.com/repos/prophesee-ai/openeb/releases/latest | pixi run jq -r .tag_name)
           echo "latest_version=$latest" >> $GITHUB_OUTPUT
 
       - name: Check if version is updated
         id: check_version
         run: |
-          current=$(yq -r '.context.version' openeb/recipe.yaml)
+          current=$(pixi run yq -r '.context.version' openeb/recipe.yaml)
           if [ "$current" = "${{ steps.get_version.outputs.latest_version }}" ]; then
             echo "No new version. Skipping."
             echo "skip=true" >> $GITHUB_OUTPUT
@@ -45,9 +46,9 @@ jobs:
       - name: Update context.version and source.sha256 in recipe.yaml
         if: steps.check_version.outputs.skip == 'false'
         run: |
-          yq -Y -i '.context.version = "${{ steps.get_version.outputs.latest_version }}"' openeb/recipe.yaml
-          yq -Y -i '.source.sha256 = "${{ steps.get_sha.outputs.sha256 }}"' openeb/recipe.yaml
-          yq -Y -i '.build.number = 0' openeb/recipe.yaml
+          pixi run yq -Y -i '.context.version = "${{ steps.get_version.outputs.latest_version }}"' openeb/recipe.yaml
+          pixi run yq -Y -i '.source.sha256 = "${{ steps.get_sha.outputs.sha256 }}"' openeb/recipe.yaml
+          pixi run yq -Y -i '.build.number = 0' openeb/recipe.yaml
 
       - name: Create Pull Request
         if: steps.check_version.outputs.skip == 'false'

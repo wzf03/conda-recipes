@@ -9,3 +9,5 @@ version = "0.1.0"
 
 [dependencies]
 rattler-build = ">=0.41.0,<0.42"
+yq = ">=3.4.3,<4"
+jq = ">=1.7.1,<2"

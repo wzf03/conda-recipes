@@ -22,9 +22,10 @@ jobs:
       matrix:
         include:
           - { target: linux-64, os: ubuntu-latest }
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
       fail-fast: false
 
-    name: ${{ matrix.target }}
+    name: ${{ matrix.target }} python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -34,6 +35,13 @@ jobs:
           pixi-version: v0.46.0
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+
+      - name: Specify Python version
+        run: |
+          find . -type f -name 'recipe.yaml' | while IFS= read -r file; do
+            echo "Processing: $file"
+            pixi run yq -Y -i '.build.skip = (.build.skip // []) + ["python != \"${{ matrix.python-version }}\""]' "$file"
+          done
 
       - name: Run code in changed subdirectories
         shell: bash
