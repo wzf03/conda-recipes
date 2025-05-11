@@ -1,28 +1,23 @@
 name: Update openeb version
-
 on:
   schedule:
     - cron: '0 2 * * 6'
   workflow_dispatch:
-
 jobs:
   update-openeb:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: prefix-dev/setup-pixi@v0.8.8
         with:
           pixi-version: v0.46.0
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-
       - name: Get latest openeb version
         id: get_version
         run: |
           latest=$(curl -s https://api.github.com/repos/prophesee-ai/openeb/releases/latest | pixi run jq -r .tag_name)
           echo "latest_version=$latest" >> $GITHUB_OUTPUT
-
       - name: Check if version is updated
         id: check_version
         run: |
@@ -33,7 +28,6 @@ jobs:
           else
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
-
       - name: Download source and compute sha256
         if: steps.check_version.outputs.skip == 'false'
         id: get_sha
@@ -42,14 +36,12 @@ jobs:
           curl -L -o source.tar.gz "$url"
           sha256=$(shasum -a 256 source.tar.gz | awk '{print $1}')
           echo "sha256=$sha256" >> $GITHUB_OUTPUT
-
       - name: Update context.version and source.sha256 in recipe.yaml
         if: steps.check_version.outputs.skip == 'false'
         run: |
           pixi run yq -Y -i '.context.version = "${{ steps.get_version.outputs.latest_version }}"' openeb/recipe.yaml
           pixi run yq -Y -i '.source.sha256 = "${{ steps.get_sha.outputs.sha256 }}"' openeb/recipe.yaml
           pixi run yq -Y -i '.build.number = 0' openeb/recipe.yaml
-
       - name: Create Pull Request
         if: steps.check_version.outputs.skip == 'false'
         uses: peter-evans/create-pull-request@v6

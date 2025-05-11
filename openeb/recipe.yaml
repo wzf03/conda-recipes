@@ -1,17 +1,14 @@
 context:
   name: openeb
   version: 5.1.1
-
 package:
   name: ${{ name|lower }}
   version: ${{ version }}
-
 source:
   url: https://github.com/prophesee-ai/openeb/releases/download/${{ version }}/Full.Source.Code.v${{ version }}.tar.gz
   sha256: 50561f027769331041c1d7b3a1ec720f7574ff203c32d5d94ecd512de99035fd
   patches:
     - 0001-conda-root-installation-path.patch
-
 build:
   number: 5
   skip:
@@ -23,7 +20,6 @@ build:
   dynamic_linking:
     overdepending_behavior: ignore
     overlinking_behavior: ignore
-
 requirements:
   build:
     - ${{ compiler('cxx') }}
@@ -49,13 +45,11 @@ requirements:
   run:
     - h5py
     - numpy
-
 tests:
   - python:
       imports:
         - metavision_sdk_base
         - metavision_core
-
 about:
   homepage: https://github.com/prophesee-ai/openeb
   summary: |
@@ -72,7 +66,6 @@ about:
   license_file: licensing/LICENSE_OPEN
   documentation: https://docs.prophesee.ai/stable/index.html
   repository: https://github.com/prophesee-ai/openeb
-
 extra:
   recipe-maintainers:
     - wzf03

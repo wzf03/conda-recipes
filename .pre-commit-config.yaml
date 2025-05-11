@@ -17,18 +17,13 @@ repos:
     hooks:
       - id: check-hooks-apply
       - id: check-useless-excludes
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.0
-    hooks:
-      # lint & attempt to correct failures (e.g. pyupgrade)
-      - id: ruff
-        args: [--fix]
-      # compatible replacement for black
-      - id: ruff-format
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.32.1
     hooks:
       # verify github syntaxes
       - id: check-github-workflows
-      - id: check-dependabot
-exclude: ^(broken-)?recipes/.*$
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.16.0
+    hooks:
+      - id: yamlfmt
+exclude: '\.patch$|\.diff$'
